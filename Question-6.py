@@ -2,40 +2,41 @@
 """
 import smtplib
 from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
 
 def send_email():
-    
-    sender_email = input("Enter your email address (sender): ")
-    recipient_email = input("Enter recipient's email address: ")
-    subject = input("Enter the email subject: ")
-    body = input("Enter the email body: ")
+    sender_email = "saleejas2@gmail"
+    recipient_email = "receiver@gmail.com"
+    subject = "Enter the email subject: "
+    body = "Enter the email body: "
 
     # Mailtrap SMTP server details
-    smtp_server = "smtp.mailtrap.io"
-    smtp_port = 465
-    smtp_username = "your_mailtrap_username"
-    smtp_password = "your_mailtrap_password"
+    smtp_server = "sandbox.smtp.mailtrap.io"
+    smtp_port = 2525
+    smtp_username = "64941c4047d48b"
+    smtp_password = "aeafd5888df080"
 
     # Create the MIMEText object
-    message = MIMEMultipart()
+    message = MIMEText(body)
     message['From'] = sender_email
     message['To'] = recipient_email
     message['Subject'] = subject
-    message.attach(MIMEText(body, 'plain'))
 
-    try:
-        # Establish a connection to the Mailtrap SMTP server
-        with smtplib.SMTP(smtp_server, smtp_port) as server:
-            # Login to the SMTP server using your Mailtrap credentials
-            server.login(smtp_username, smtp_password)
+    # Connect to the SMTP server
+    server = smtplib.SMTP(smtp_server, smtp_port)
 
-            server.sendmail(sender_email, recipient_email, message.as_string())
+    # Start TLS
+    server.starttls()
 
-        print("Email sent successfully!")
+    # Login to the SMTP server using your Mailtrap credentials
+    server.login(smtp_username, smtp_password)
 
-    except smtplib.SMTPException as e:
-        print(f"Error: Unable to send email - {e}")
+    # Send the email
+    server.sendmail(sender_email, recipient_email, message.as_string())
 
-if __name__ == "__main__":
-    send_email()
+    # Quit the server
+    server.quit()
+
+send_email()
+
+
+
