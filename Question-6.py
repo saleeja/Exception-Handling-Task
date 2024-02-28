@@ -6,8 +6,8 @@ from email.mime.text import MIMEText
 def send_email():
     sender_email = "saleejas2@gmail"
     recipient_email = "receiver@gmail.com"
-    subject = "Enter the email subject: "
-    body = "Enter the email body: "
+    subject = " the email subject: "
+    body = " the email body: "
 
     # Mailtrap SMTP server details
     smtp_server = "sandbox.smtp.mailtrap.io"
@@ -15,26 +15,33 @@ def send_email():
     smtp_username = "64941c4047d48b"
     smtp_password = "aeafd5888df080"
 
-    # Create the MIMEText object
-    message = MIMEText(body)
-    message['From'] = sender_email
-    message['To'] = recipient_email
-    message['Subject'] = subject
 
-    # Connect to the SMTP server
-    server = smtplib.SMTP(smtp_server, smtp_port)
+    try:
+        # Create the MIMEText object
+        message = MIMEText(body)
+        message['From'] = sender_email
+        message['To'] = recipient_email
+        message['Subject'] = subject
 
-    # Start TLS
-    server.starttls()
+        # Connect to the SMTP server
+        server = smtplib.SMTP(smtp_server, smtp_port)
 
-    # Login to the SMTP server using your Mailtrap credentials
-    server.login(smtp_username, smtp_password)
+        # Start TLS
+        server.starttls()
 
-    # Send the email
-    server.sendmail(sender_email, recipient_email, message.as_string())
+        # Login to the SMTP server using your Mailtrap credentials
+        server.login(smtp_username, smtp_password)
 
-    # Quit the server
-    server.quit()
+        # Send the email
+        server.sendmail(sender_email, recipient_email, message.as_string())
+        print("Email sent successfully.")
+
+    except smtplib.SMTPException as e:
+        print(f"Error sending email: {e}")
+
+    finally:
+        
+        server.quit() if 'server' in locals() else None
 
 send_email()
 

@@ -3,37 +3,43 @@
 import smtplib
 from email.mime.text import MIMEText
 
-def send_email(sender_email, receiver_emails, message, subject):
+def send_email():
+    sender_email = "saleejas2@gmail.com"
+    recipients = ["receiver1@gmail.com", "receiver2@gmail.com"]  # List of recipient email addresses
+    subject = "Mailtrap"
+    body = """Mailtrap is a service that allows developers to test and debug their email functionality in  safe and isolated environment.It provides a fake SMTP server that can beused to capture and inspect outgoing emails from your application without actually sending them to the intended recipients"""
+
+    # Mailtrap SMTP server details
+    smtp_server = "sandbox.smtp.mailtrap.io"
+    smtp_port = 2525
+    smtp_username = "64941c4047d48b"
+    smtp_password = "aeafd5888df080"
 
     try:
-        # Replace these with your actual credentials and consider using environment variables for security
-        smtp_server = "smtp.example.com"
-        port = 587  
+        # Create the MIMEText object
+        message = MIMEText(body)
+        message['From'] = sender_email
+        message['To'] = ", ".join(recipients)  # Join recipient emails with commas
+        message['Subject'] = subject
 
-        # Create a MIMEText object with the email content
-        msg = MIMEText(message)
-        msg['Subject'] = subject
-        msg['From'] = sender_email
-        msg['To'] = ", ".join(receiver_emails)  
+        # Connect to the SMTP server
+        server = smtplib.SMTP(smtp_server, smtp_port)
 
-    
-        with smtplib.SMTP(smtp_server, port) as server:
-            server.starttls()
+        # Start TLS
+        server.starttls()
 
-            # Authenticate with the SMTP server using credentials (consider using secure authentication methods)
-            server.login(sender_email, "your_password")
+        # Login to the SMTP server using your Mailtrap credentials
+        server.login(smtp_username, smtp_password)
 
-            # Send the email to all recipients
-            server.sendmail(sender_email, receiver_emails, msg.as_string())
-            print(f"Email sent successfully to {', '.join(receiver_emails)}!")
+            # Send the email
+        server.sendmail(sender_email, recipients, message.as_string())
+        print("Email sent successfully.")
 
     except smtplib.SMTPException as e:
-        print(f"Error sending email: {e}")
+            print(f"Error sending email: {e}")
 
+    finally:
+            # Quit the server in the 'finally' block to ensure it's done even if there was an exception
+            server.quit() if 'server' in locals() else None
 
-sender_email = "sender@example.com"
-receiver_emails = ["receiver1@example.com", "receiver2@example.com"]
-message = "This is an email sent to multiple recipients using Python's smtplib library."
-subject = "Email with Multiple Recipients"
-
-send_email(sender_email, receiver_emails, message, subject)
+send_email()

@@ -6,43 +6,43 @@
 import smtplib
 from email.mime.text import MIMEText
 
-def send_email(sender_email, receiver_email, message, subject):
-  """
-  Sends an email with proper exception handling.
+def send_email():
+    try:
+        sender_email = "saleejas2@gmail.com"
+        recipients = ["receiver1@gmail.com", "receiver2@gmail.com"]
+        subject = "The email subject"
+        body = "The email body"
 
-  Args:
-      sender_email: Email address of the sender.
-      receiver_email: Email address of the receiver.
-      message: The body content of the email.
-      subject: The subject line of the email.
+        # Mailtrap SMTP server details
+        smtp_server = "sandbox.smtp.mailtrap.io"
+        smtp_port = 2525
+        smtp_username = "64941c4047d48b"
+        smtp_password = "aeafd5888df080"
 
-  Raises:
-      SMTPException: If an error occurs during the email sending process.
-  """
+        # Create the MIMEText object
+        message = MIMEText(body)
+        message['From'] = sender_email
+        message['To'] = ", ".join(recipients)
+        message['Subject'] = subject
 
-  try:
-    # Replace these with your actual credentials
-    smtp_server = "smtp.example.com"
-    port = 587  # Use 465 for SSL/TLS
+        # Connect to the SMTP server
+        server = smtplib.SMTP(smtp_server, smtp_port)
 
-    msg = MIMEText(message)
-    msg['Subject'] = subject
-    msg['From'] = sender_email
-    msg['To'] = receiver_email
+        # Start TLS
+        server.starttls()
 
-    with smtplib.SMTP(smtp_server, port) as server:
-      server.starttls()
-      server.login(sender_email, "your_password")
-      server.sendmail(sender_email, receiver_email, msg.as_string())
-      print("Email sent successfully!")
+        # Login to the SMTP server using your Mailtrap credentials
+        server.login(smtp_username, smtp_password)
 
-  except smtplib.SMTPException as e:
-    print(f"Error sending email: {e}")
+        # Send the email
+        server.sendmail(sender_email, recipients, message.as_string())
 
-# Example usage
-sender_email = "sender@example.com"
-receiver_email = "receiver@example.com"
-message = "This is an email sent using Python's smtplib library."
-subject = "Test Email"
+    except smtplib.SMTPException as e:
+        print(f"Error sending email: {e}")
 
-send_email(sender_email, receiver_email, message, subject)
+    finally:
+        # Quit the server in the 'finally' block to ensure it's done even if there was an exception
+        server.quit() if 'server' in locals() else None
+
+
+send_email()
